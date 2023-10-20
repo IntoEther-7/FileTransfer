@@ -1,5 +1,7 @@
 package org.ether.filetransfer;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -18,6 +20,11 @@ public class Main {
                 break;
             } else if ("start".equals(input)) {
                 server.start();
+                try {
+                    log.info("网址：http://{}:{}/file", InetAddress.getLocalHost().getHostAddress(), server.getPort());
+                } catch (UnknownHostException e) {
+                    throw new RuntimeException(e);
+                }
             } else if ("close".equals(input)) {
                 server.close();
             } else {

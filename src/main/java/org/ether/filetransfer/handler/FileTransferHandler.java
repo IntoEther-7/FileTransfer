@@ -21,18 +21,19 @@ public class FileTransferHandler implements HttpHandler {
         //设置响应头，必须在sendResponseHeaders方法之前设置！
         exchange.getResponseHeaders().add("Content-Disposition", "attachment;filename=" + file.getName());
 
-        byte[] bytes;
-        try (InputStream inputStream = new FileInputStream(file)) {
-            bytes = inputStream.readAllBytes();
+        byte[] bytes = new byte[1024 * 1024 * 50];
+        int len;
+        exchange.sendResponseHeaders(200, file.length());
+        try (InputStream inputStream = new FileInputStream(file);
+            OutputStream outputStream = exchange.getResponseBody()) {
+            exchange.setStreams(inputStream, outputStream);
+            while ((len = inputStream.read(bytes)) != -1) {
+                outputStream.write(bytes, 0 ,len);
+                outputStream.flush();
+            }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
         //设置响应码和响应体长度，必须在getResponseBody方法之前调用！
-        exchange.sendResponseHeaders(200, bytes.length);
-
-        OutputStream outputStream = exchange.getResponseBody();
-        outputStream.write(bytes);
-        outputStream.flush();
-        outputStream.close();
     }
 }

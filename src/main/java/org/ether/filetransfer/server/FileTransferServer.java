@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.util.concurrent.Executors;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.ether.filetransfer.handler.FileTransferHandler;
 
@@ -12,8 +13,9 @@ import org.ether.filetransfer.handler.FileTransferHandler;
 public class FileTransferServer implements AutoCloseable {
     private HttpServer server;
     private final FileTransferHandler handler;
-    int port;
-    int backlog;
+    @Getter
+    private final int port;
+    private final int backlog;
 
     public FileTransferServer() {
         this(17890, 20);
